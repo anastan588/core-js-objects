@@ -385,7 +385,16 @@ class Selector {
   }
 
   element(value) {
-    if (this.selector.some((selector) => selector.type === 'id')) {
+    if (
+      this.selector.some(
+        (selector) =>
+          selector.type === 'id' ||
+          selector.type === 'class' ||
+          selector.type === 'attr' ||
+          selector.type === 'pseudoClass' ||
+          selector.type === 'pseudoElement'
+      )
+    ) {
       throw new Error(
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
       );
@@ -403,7 +412,10 @@ class Selector {
     if (
       this.selector.some(
         (selector) =>
-          selector.type === 'class' || selector.type === 'pseudoElement'
+          selector.type === 'class' ||
+          selector.type === 'attr' ||
+          selector.type === 'pseudoClass' ||
+          selector.type === 'pseudoElement'
       )
     ) {
       throw new Error(
@@ -430,7 +442,14 @@ class Selector {
   }
 
   class(value) {
-    if (this.selector.some((selector) => selector.type === 'attr')) {
+    if (
+      this.selector.some(
+        (selector) =>
+          selector.type === 'attr' ||
+          selector.type === 'pseudoClass' ||
+          selector.type === 'pseudoElement'
+      )
+    ) {
       throw new Error(
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
       );
@@ -452,7 +471,12 @@ class Selector {
   }
 
   attr(value) {
-    if (this.selector.some((selector) => selector.type === 'pseudoClass')) {
+    if (
+      this.selector.some(
+        (selector) =>
+          selector.type === 'pseudoClass' || selector.type === 'pseudoElement'
+      )
+    ) {
       throw new Error(
         'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
       );
