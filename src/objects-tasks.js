@@ -378,233 +378,33 @@ function group(array, keySelector, valueSelector) {
  *  For more examples see unit tests.
  */
 
-class Selector {
-  constructor() {
-    this.selector = [];
-    this.comb = '';
-  }
-
-  element(value) {
-    if (
-      this.selector.some(
-        (selector) =>
-          selector.type === 'id' ||
-          selector.type === 'class' ||
-          selector.type === 'attr' ||
-          selector.type === 'pseudoClass' ||
-          selector.type === 'pseudoElement'
-      )
-    ) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    if (this.selector.some((selector) => selector.type === 'element')) {
-      throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector" if element, id or pseudo-element occurs twice or more times'
-      );
-    }
-    this.selector.splice(0, 0, { type: 'element', value });
-    return this;
-  }
-
-  id(value) {
-    if (
-      this.selector.some(
-        (selector) =>
-          selector.type === 'class' ||
-          selector.type === 'attr' ||
-          selector.type === 'pseudoClass' ||
-          selector.type === 'pseudoElement'
-      )
-    ) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    if (this.selector.some((selector) => selector.type === 'id')) {
-      throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector" if element, id or pseudo-element occurs twice or more times'
-      );
-    }
-    const index = this.selector.findLastIndex((item) => {
-      return item.type === 'element';
-    });
-    if (index >= 0) {
-      this.selector.splice(index + 1, 0, {
-        type: 'id',
-        value: `#${value}`,
-      });
-      return this;
-    }
-    this.selector.splice(0, 0, { type: 'id', value: `#${value}` });
-    return this;
-  }
-
-  class(value) {
-    if (
-      this.selector.some(
-        (selector) =>
-          selector.type === 'attr' ||
-          selector.type === 'pseudoClass' ||
-          selector.type === 'pseudoElement'
-      )
-    ) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    const index = this.selector.findLastIndex((item) => {
-      return (
-        item.type === 'class' || item.type === 'id' || item.type === 'element'
-      );
-    });
-    if (index >= 0) {
-      this.selector.splice(index + 1, 0, {
-        type: 'class',
-        value: `.${value}`,
-      });
-      return this;
-    }
-    this.selector.splice(0, 0, { type: 'class', value: `.${value}` });
-    return this;
-  }
-
-  attr(value) {
-    if (
-      this.selector.some(
-        (selector) =>
-          selector.type === 'pseudoClass' || selector.type === 'pseudoElement'
-      )
-    ) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    const index = this.selector.findLastIndex(
-      (item) =>
-        item.type === 'class' || item.type === 'id' || item.type === 'element'
-    );
-    if (index >= 0) {
-      this.selector.splice(index + 1, 0, {
-        type: 'attr',
-        value: `[${value}]`,
-      });
-      return this;
-    }
-    this.selector.splice(0, 0, { type: 'attr', value: `[${value}]` });
-    return this;
-  }
-
-  pseudoClass(value) {
-    if (this.selector.some((selector) => selector.type === 'pseudoElement')) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    const index = this.selector.findLastIndex(
-      (item) =>
-        item.type === 'pseudoClass' ||
-        item.type === 'attr' ||
-        item.type === 'class' ||
-        item.type === 'id' ||
-        item.type === 'element'
-    );
-    if (index >= 0) {
-      this.selector.splice(index + 1, 0, {
-        type: 'pseudoClass',
-        value: `:${value}`,
-      });
-      return this;
-    }
-    this.selector.splice(0, 0, { type: 'pseudoClass', value: `:${value}` });
-    return this;
-  }
-
-  pseudoElement(value) {
-    if (this.selector.some((selector) => selector.type === 'pseudoElement')) {
-      throw new Error(
-        'Element, id and pseudo-element should not occur more then one time inside the selector" if element, id or pseudo-element occurs twice or more times'
-      );
-    }
-    const index = this.selector.findLastIndex(
-      (item) =>
-        item.type === 'pseudoClass' ||
-        item.type === 'attr' ||
-        item.type === 'class' ||
-        item.type === 'id' ||
-        item.type === 'element'
-    );
-    if (index >= 0) {
-      this.selector.splice(index + 1, 0, {
-        type: 'pseudoElement',
-        value: `::${value}`,
-      });
-      return this;
-    }
-    this.selector.splice(0, 0, { type: 'pseudoElement', value: `::${value}` });
-    return this;
-  }
-
-  combine(selector1, combinator, selector2) {
-    this.comb = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
-    this.selector.push({ type: 'combine', value: this.comb });
-    return this;
-  }
-
-  stringify() {
-    if (!this.selector.length) {
-      return this.comb;
-    }
-    const result = this.selector
-      .reduce((acc, item) => {
-        acc.push(item.value);
-        return acc;
-      }, [])
-      .join('');
-    return result;
-  }
-}
-
 const cssSelectorBuilder = {
-  element(value) {
-    const element = new Selector().element(value);
-    return element;
+  element(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  id(value) {
-    const id = new Selector().id(value);
-    return id;
+  id(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  class(value) {
-    const claSS = new Selector().class(value);
-    return claSS;
+  class(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  attr(value) {
-    const attr = new Selector().attr(value);
-    return attr;
+  attr(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  pseudoClass(value) {
-    const pseudoClass = new Selector().pseudoClass(value);
-    return pseudoClass;
+  pseudoClass(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  pseudoElement(value) {
-    const pseudoElement = new Selector().pseudoElement(value);
-    return pseudoElement;
+  pseudoElement(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  combine(value, selector1, combinator, selector2) {
-    const combine = new Selector().combine(
-      value,
-      selector1,
-      combinator,
-      selector2
-    );
-    return combine;
+  combine(/* selector1, combinator, selector2 */) {
+    throw new Error('Not implemented');
   },
 };
 
