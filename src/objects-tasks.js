@@ -416,7 +416,7 @@ class Selector {
   validateNotRepeating(type) {
     if (this.selector.some((item) => item.type === type)) {
       throw new Error(
-        `Element, id and pseudo-element should not occur more then one time inside the selector`
+        `Element, id and pseudo-element should not occur more than one time inside the selector`
       );
     }
   }
